@@ -16,17 +16,20 @@
 .def enable = r22
 .def keypad_data = r23
 .def keypad_state = r24
+.def can_enable_again = r25
 .def mod = r6
 .def div = r7
 .def check_data = r8
 
 .equ count_1_ram = 0x01
-.equ count_2_ram = 0x02
+.equ count_2_ram = 0x10
 
 .org $00
 rjmp INIT_STACK
 .org $01
 rjmp ENABLE_STATE
+.org $07
+rjmp TIMER
 
 INIT_STACK:
 	ldi temp, LOW(RAMEND)
@@ -37,13 +40,23 @@ INIT_STACK:
 PRE_PROGRAM:
 	rcall INIT
 	rcall UPDATE_COUNT_LCD
-	ldi r17,0b00001010 	
-	out MCUCR,r17		; falling edge activated
-	ldi r17,0b11100000	; enabled for INT_0+1+2	 
-	out GICR,r17		; 
+	ldi temp,0b00001010 	
+	out MCUCR,temp		; falling edge activated
+	ldi temp,0b11100000	; enabled for INT_0+1+2	 
+	out GICR,temp
+	ldi temp, (1<<CS01)	; 
+	out TCCR0, temp			
+	ldi temp,1<<TOV0
+	out TIFR,temp		; Interrupt if overflow occurs in T/C0
+	ldi temp,1<<TOIE0
+	out TIMSK,temp		; Enable Timer/Counter0 Overflow int
+	ser r16
 	sei
 	
 PROGRAM:
+	cpi can_enable_again, 1
+	breq RESET_TIMER
+	AFTER_RESET:
 	in temp, PINC
 	cpi temp, 1
 	breq CHOOSE_1
@@ -51,6 +64,11 @@ PROGRAM:
 	breq CHOOSE_2
 	EXIT_IF_ADD:
 	rjmp PROGRAM
+
+RESET_TIMER:
+	clr temp
+	out TCNT0, temp
+	rjmp AFTER_RESET
 
 INIT:
 	ldi temp, 0xFF
@@ -167,6 +185,7 @@ ADD_1:
 	ldi temp, 1
 	add count_1, temp
 	sts count_1_ram, count_1
+	ldi can_enable_again, 0
 	rcall UPDATE_COUNT_LCD
 	rjmp EXIT_IF_CONFIRMATION
 
@@ -175,6 +194,7 @@ ADD_2:
 	ldi temp, 1
 	add count_2, temp
 	sts count_2_ram, count_2
+	ldi can_enable_again, 0
 	rcall UPDATE_COUNT_LCD
 	rjmp EXIT_IF_CONFIRMATION
 
@@ -243,7 +263,15 @@ confirmation_message:
 .db "Choose", 0, 0
 
 ENABLE_STATE:
+	cpi can_enable_again, 0
+	breq RET_INT
 	ldi enable, 1
 	ldi temp, 0x01
 	OUT PORTA, temp
+
+RET_INT:
+	reti
+
+TIMER:
+	ldi can_enable_again, 1
 	reti
