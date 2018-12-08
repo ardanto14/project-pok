@@ -20,6 +20,9 @@
 .def div = r7
 .def check_data = r8
 
+.equ count_1_ram = 0x01
+.equ count_2_ram = 0x02
+
 .org $00
 rjmp INIT_STACK
 .org $01
@@ -59,7 +62,14 @@ INIT:
 	out DDRE, temp ; keypad
 	ldi temp, 0x00
 	out PORTA, temp ; set all led off
+	ldi temp, 0
+	sts count_1_ram, temp
+	sts count_2_ram, temp
 	ret
+
+TO_PROGRAM:
+	rcall UPDATE_COUNT_LCD
+	rjmp PROGRAM
 
 ;#######
 ;# LCD
@@ -138,6 +148,8 @@ CHOOSE_2:
 
 CONFIRMATION:
 	in temp, PINC
+	cpi temp, 8
+	breq TO_PROGRAM
 	cpi temp, 4
 	brne CONFIRMATION
 	cpi choose, 1
@@ -151,14 +163,18 @@ CONFIRMATION:
 	ret
 
 ADD_1:
+	lds count_1, count_1_ram
 	ldi temp, 1
 	add count_1, temp
+	sts count_1_ram, count_1
 	rcall UPDATE_COUNT_LCD
 	rjmp EXIT_IF_CONFIRMATION
 
 ADD_2:
+	lds count_2, count_2_ram
 	ldi temp, 1
 	add count_2, temp
+	sts count_2_ram, count_2
 	rcall UPDATE_COUNT_LCD
 	rjmp EXIT_IF_CONFIRMATION
 
