@@ -12,7 +12,7 @@
       <Target>ATmega8515</Target>
    </General>
    <Views>
-      <LCD>a
+      <LCD>
          <Name>LCD1</Name>
          <Position>
             <top>0</top>
@@ -80,6 +80,47 @@
             <PortPin>
                <Port>PORTC</Port>
                <Bit>2</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <TrinaryGroupEnable index="0">0</TrinaryGroupEnable>
+         <TrinaryGroupEnable index="1">0</TrinaryGroupEnable>
+      </Buttons>
+      <Buttons>
+         <Name>Buttons2</Name>
+         <Position>
+            <top>130</top>
+            <left>186</left>
+         </Position>
+         <Config index="0">
+            <Name>CANCEL</Name>
+            <PortPin>
+               <Port>PORTC</Port>
+               <Bit>3</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="1">
+            <Name>Button1</Name>
+            <PortPin>
+               <Port>PORTA</Port>
+               <Bit>5</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="2">
+            <Name>Button2</Name>
+            <PortPin>
+               <Port>PORTA</Port>
+               <Bit>6</Bit>
+            </PortPin>
+            <Invert>0</Invert>
+         </Config>
+         <Config index="3">
+            <Name>Button3</Name>
+            <PortPin>
+               <Port>PORTA</Port>
+               <Bit>7</Bit>
             </PortPin>
             <Invert>0</Invert>
          </Config>
@@ -165,112 +206,5 @@
             <Invert>0</Invert>
          </Config>
       </LEDs>
-      <Keypad>
-         <Name>Keypad1</Name>
-         <Position>
-            <top>101</top>
-            <left>154</left>
-         </Position>
-         <PortMapping>
-            <Strobe index="0">
-               <Port>PORTE</Port>
-               <Bit>4</Bit>
-            </Strobe>
-            <Strobe index="1">
-               <Port>PORTE</Port>
-               <Bit>5</Bit>
-            </Strobe>
-            <Strobe index="2">
-               <Port>PORTE</Port>
-               <Bit>6</Bit>
-            </Strobe>
-            <Strobe index="3">
-               <Port>PORTE</Port>
-               <Bit>7</Bit>
-            </Strobe>
-            <Input index="0">
-               <Port>PORTE</Port>
-               <Bit>0</Bit>
-            </Input>
-            <Input index="1">
-               <Port>PORTE</Port>
-               <Bit>1</Bit>
-            </Input>
-            <Input index="2">
-               <Port>PORTE</Port>
-               <Bit>2</Bit>
-            </Input>
-            <Input index="3">
-               <Port>PORTE</Port>
-               <Bit>3</Bit>
-            </Input>
-         </PortMapping>
-         <Buttons>
-            <Button index="0">
-               <Caption>A/N</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="1">
-               <Caption>E/R</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="2">
-               <Caption>I/V</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="3">
-               <Caption>M/Z</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="4">
-               <Caption>B/O</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="5">
-               <Caption>F/S</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="6">
-               <Caption>J/W</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="7">
-               <Caption>Delete</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="8">
-               <Caption>C/P</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="9">
-               <Caption>G/T</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="10">
-               <Caption>K/X</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="11">
-               <Caption>State</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="12">
-               <Caption>D/Q</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="13">
-               <Caption>H/U</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="14">
-               <Caption>L/Y</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-            <Button index="15">
-               <Caption>OK</Caption>
-               <PCKey>0</PCKey>
-            </Button>
-         </Buttons>
-      </Keypad>
    </Views>
 </HAPSIM>
