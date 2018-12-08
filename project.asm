@@ -22,7 +22,7 @@
 .def check_data = r8
 
 .equ count_1_ram = 0x01
-.equ count_2_ram = 0x10
+.equ count_2_ram = 0x02
 
 .org $00
 rjmp INIT_STACK
