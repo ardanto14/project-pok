@@ -28,7 +28,7 @@
 rjmp INIT_STACK
 .org $01
 rjmp ENABLE_STATE
-.org $07
+.org $06
 rjmp TIMER
 
 INIT_STACK:
@@ -44,13 +44,12 @@ PRE_PROGRAM:
 	out MCUCR,temp		; falling edge activated
 	ldi temp,0b11100000	; enabled for INT_0+1+2	 
 	out GICR,temp
-	ldi temp, (1<<CS01)	; 
-	out TCCR0, temp			
-	ldi temp,1<<TOV0
+	ldi temp, (1<<CS10)	;
+	out TCCR1B, temp			
+	ldi temp,1<<TOV1
 	out TIFR,temp		; Interrupt if overflow occurs in T/C0
-	ldi temp,1<<TOIE0
+	ldi temp,1<<TOIE1
 	out TIMSK,temp		; Enable Timer/Counter0 Overflow int
-	ser r16
 	sei
 	
 PROGRAM:
@@ -67,7 +66,8 @@ PROGRAM:
 
 RESET_TIMER:
 	clr temp
-	out TCNT0, temp
+	out TCNT1L, temp
+	out TCNT1H, temp
 	rjmp AFTER_RESET
 
 INIT:
@@ -88,6 +88,28 @@ INIT:
 TO_PROGRAM:
 	rcall UPDATE_COUNT_LCD
 	rjmp PROGRAM
+
+TO_EXIT_IF_ADD:
+	rjmp EXIT_IF_ADD
+
+
+CHOOSE_1:
+	cpi enable, 1
+	brne EXIT_IF_ADD
+	ldi choose, 1
+	rcall CLEAR_LCD
+	rcall WRITE_CONFIRMATION_LCD
+	rcall CONFIRMATION
+	rjmp EXIT_IF_ADD
+
+CHOOSE_2:
+	cpi enable, 1
+	brne TO_EXIT_IF_ADD
+	ldi choose, 2
+	rcall CLEAR_LCD
+	rcall WRITE_CONFIRMATION_LCD
+	rcall CONFIRMATION
+	rjmp EXIT_IF_ADD
 
 ;#######
 ;# LCD
@@ -145,24 +167,6 @@ WRITE_CONF_LCD_BOT:
 ;#######
 ;# CHOOSE
 ;#######
-
-CHOOSE_1:
-	cpi enable, 1
-	brne EXIT_IF_ADD
-	ldi choose, 1
-	rcall CLEAR_LCD
-	rcall WRITE_CONFIRMATION_LCD
-	rcall CONFIRMATION
-	rjmp EXIT_IF_ADD
-
-CHOOSE_2:
-	cpi enable, 1
-	brne EXIT_IF_ADD
-	ldi choose, 2
-	rcall CLEAR_LCD
-	rcall WRITE_CONFIRMATION_LCD
-	rcall CONFIRMATION
-	rjmp EXIT_IF_ADD
 
 CONFIRMATION:
 	in temp, PINC
@@ -258,10 +262,6 @@ PRINT_DATA:
 	rcall WRITE_LCD
 	ret
 
-
-confirmation_message:
-.db "Choose", 0, 0
-
 ENABLE_STATE:
 	cpi can_enable_again, 0
 	breq RET_INT
@@ -275,3 +275,6 @@ RET_INT:
 TIMER:
 	ldi can_enable_again, 1
 	reti
+
+confirmation_message:
+.db "Choose", 0, 0
